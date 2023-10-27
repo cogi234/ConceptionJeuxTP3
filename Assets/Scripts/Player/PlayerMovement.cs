@@ -17,10 +17,14 @@ public class PlayerMovement : MonoBehaviour
     float ySpeed = 0;
     float originalStepOffset;
 
+    //Animation stuff
+    Animator animator;
+
     private void Awake()
     {
         characterController = GetComponent<CharacterController>();
         originalStepOffset = characterController.stepOffset;
+        animator = GetComponentInChildren<Animator>();
 
         //Input setup
         InputActionMap playerInput = inputAsset.FindActionMap("player");
@@ -41,7 +45,6 @@ public class PlayerMovement : MonoBehaviour
         if (moveDirection.y <= 0)
         {
             sprinting = false;
-
         }
     }
     private void JumpCall(InputAction.CallbackContext action)
@@ -79,6 +82,12 @@ public class PlayerMovement : MonoBehaviour
         Vector3 movement = new Vector3(moveDirection.x, 0, moveDirection.y) * speed;
         //Sprint:
         movement *= sprinting ? sprintMultiplier : 1;
+
+        //Animator stuff
+        animator.SetBool("Going Right", movement.x > 0);
+        animator.SetFloat("Side Speed Abs", Mathf.Abs(movement.x));
+        animator.SetFloat("Speed", movement.y);
+
         //On transforme en mouvement relatif a notre rotation
         movement = transform.localToWorldMatrix * movement;
         //Mouvement vertical
