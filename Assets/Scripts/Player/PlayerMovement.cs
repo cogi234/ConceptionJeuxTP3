@@ -10,11 +10,12 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float speed = 5;
     [SerializeField] float sprintMultiplier = 2;
     [SerializeField] float jumpSpeed = 5;
+    [SerializeField] float lerpConstant = 5;
 
     CharacterController characterController;
     bool sprinting = false;
     Vector2 moveDirection = new Vector2();
-    float ySpeed = 0;
+    Vector3 moveSpeed = new Vector3();
     float originalStepOffset;
 
     //Animation stuff
@@ -52,13 +53,14 @@ public class PlayerMovement : MonoBehaviour
         //On saute seulement si on touche au sol
         if (characterController.isGrounded)
         {
-            ySpeed = jumpSpeed;
+            moveSpeed.y = jumpSpeed;
+            animator.SetTrigger("Jump");
         }
     }
     private void JumpStop(InputAction.CallbackContext action)
     {
         //Lorsque on lache le bouton de saut, on arrete la vitesse verticale
-        ySpeed = Mathf.Min(0, ySpeed);
+        moveSpeed.y = Mathf.Min(0, moveSpeed.y);
     }
     private void SprintCall(InputAction.CallbackContext action)
     {
@@ -68,10 +70,10 @@ public class PlayerMovement : MonoBehaviour
     private void FixedUpdate()
     {
         //Gravite
-        ySpeed += Physics.gravity.y * Time.deltaTime;
+        moveSpeed.y += Physics.gravity.y * Time.fixedDeltaTime;
         if (characterController.isGrounded)
         {
-            ySpeed = Mathf.Max(-0.5f, ySpeed);
+            moveSpeed.y = Mathf.Max(-0.5f, moveSpeed.y);
             characterController.stepOffset = originalStepOffset;
         } else
         {
@@ -79,19 +81,22 @@ public class PlayerMovement : MonoBehaviour
         }
 
         //On execute le mouvement
-        Vector3 movement = new Vector3(moveDirection.x, 0, moveDirection.y) * speed;
+        Vector3 targetSpeed = new Vector3(moveDirection.x, 0, moveDirection.y) * speed;
         //Sprint:
-        movement *= sprinting ? sprintMultiplier : 1;
+        targetSpeed *= sprinting ? sprintMultiplier : 1;
+        //Mouvement vertical
+        targetSpeed.y = moveSpeed.y;
+
+        //Interpolation de la vitesse vers notre cible
+        moveSpeed = Vector3.Lerp(moveSpeed, targetSpeed, Time.fixedDeltaTime * lerpConstant);
 
         //Animator stuff
-        animator.SetBool("Going Right", movement.x > 0);
-        animator.SetFloat("Side Speed Abs", Mathf.Abs(movement.x));
-        animator.SetFloat("Speed", movement.y);
+        animator.SetBool("Grounded", characterController.isGrounded);
+        animator.SetFloat("X", moveSpeed.x);
+        animator.SetFloat("Z", moveSpeed.z);
 
         //On transforme en mouvement relatif a notre rotation
-        movement = transform.localToWorldMatrix * movement;
-        //Mouvement vertical
-        movement.y = ySpeed;
+        Vector3 movement = transform.localToWorldMatrix * moveSpeed;
 
         characterController.Move(movement * Time.fixedDeltaTime);
     }
