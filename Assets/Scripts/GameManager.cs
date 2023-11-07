@@ -11,9 +11,9 @@ public class GameManager : MonoBehaviour
 
     //Gamestage stuff
     [SerializeField] Light skylight;
-    [SerializeField] List<Material> skyboxesForGamestages;
+    MoveToPoint skylightMovement;
     [SerializeField] List<float> lightLevelsForGamestages;
-    [SerializeField] float lightRotation = 15;
+    [SerializeField] List<Vector3> lightPositionsForGamestages;
 
     //Ui stuff
     [SerializeField] GameObject endGameCanvas, uiCanvas;
@@ -21,6 +21,7 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
+        skylightMovement = skylight.transform.parent.GetComponent<MoveToPoint>();
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         UpdateGameStage();
@@ -44,7 +45,7 @@ public class GameManager : MonoBehaviour
         gameStage++;
         UpdateGameStage();
 
-        if (gameStage >= skyboxesForGamestages.Count - 1)
+        if (gameStage >= lightLevelsForGamestages.Count - 1)
         {
             GameOver("Victory!");
         }
@@ -53,9 +54,7 @@ public class GameManager : MonoBehaviour
     private void UpdateGameStage()
     {
         skylight.intensity = lightLevelsForGamestages[gameStage];
-        RenderSettings.skybox = skyboxesForGamestages[gameStage];
-
-        skylight.transform.Rotate(lightRotation, 0, 0);
+        skylightMovement.target = lightPositionsForGamestages[gameStage];
     }
 
     private void Update()
