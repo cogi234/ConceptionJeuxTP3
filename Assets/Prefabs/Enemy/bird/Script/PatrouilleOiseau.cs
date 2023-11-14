@@ -18,13 +18,14 @@ public class PatrouilleOiseau : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        cri = GameObject.FindGameObjectWithTag("TetrisBird").GetComponents<AudioSource>()[0];
-       
-        joueur = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
+        
     }
     private void Awake()
     {
+        cri = GameObject.FindGameObjectWithTag("TetrisBird").GetComponent<AudioSource>();
 
+        Debug.Log(cri);
+        joueur = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
         SetupTree();
 
     }
@@ -41,7 +42,7 @@ public class PatrouilleOiseau : MonoBehaviour
         Node l4 = new Poursuite(joueur,gameObject.transform,Speed);
         Node Seq2 = new Sequence(new List<Node> { Seq1, l3,l4 });
         Node l5 = new Patrouille(gameObject.transform,destination,Speed);
-        Node sel1 = new Selector(new List<Node>() { Seq1, l2,l5 });
+        Node sel1 = new Selector(new List<Node>() { Seq2, l2,l5 });
 
         root = sel1;
 
@@ -50,18 +51,18 @@ public class PatrouilleOiseau : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.Log("allo");
+        
         root.Evaluate();
     }
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("enter");
+      
         l1.detection = true; 
     }
 
     private void OnTriggerExit(Collider other)
     {
-        Debug.Log("exit");
+       
         l1.detection = false;
     }
 

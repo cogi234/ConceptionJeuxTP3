@@ -81,7 +81,7 @@ public class Sequence : Node
     }
     public override NodeState Evaluate()
     {
-        Debug.Log("passe sequence");
+       
 
         foreach (Node n in children)
         {
@@ -94,7 +94,10 @@ public class Sequence : Node
            
 
         }
+        Debug.Log(State);
+        Debug.Log("sequence.réussi");
         State = NodeState.Success;
+
         return NodeState.Success;
 
 
@@ -113,7 +116,7 @@ public class Selector : Node
     public Selector(List<Node> n) : base(n) { }
     public override NodeState Evaluate()
     {
-        Debug.Log("passe selector");
+       
         foreach (Node n in children)
         {
             State = n.Evaluate();
@@ -147,7 +150,7 @@ public class Inverter : Node
     }
     public override NodeState Evaluate()
     {
-        Debug.Log("passe invert");
+        
         NodeState childState = children[0].Evaluate();
 
         if (childState == NodeState.Failure)
@@ -175,7 +178,7 @@ public class Inverter : Node
 
 public class Detect : Node
 {
-    bool aUpdatePosition = false;
+    bool aUpdatePosition = true;
   public  bool detection = false;
     Node root;
     Transform birdPosition;
@@ -188,9 +191,10 @@ public class Detect : Node
 
     }
 
-
+    bool DéjaDétect = false;
     public override NodeState Evaluate()
     {
+        State = NodeState.Failure;
         root = parent;
 
         while (root.parent != null)
@@ -199,39 +203,46 @@ public class Detect : Node
             root = root.parent;
 
         }
-        Debug.Log(detection);
-        Debug.Log("passe détect");
-        bool DéjaDétect = false;
      
-        State = NodeState.Failure;
+        
+        
+     
+        
        
         if (detection)
         {
-            if (DéjaDétect)
+            
+            if (!DéjaDétect)
             {
 
-
-                root.SetData("detet", true);
+           
+                root.SetData("detect", true);
                 if (aUpdatePosition)
                 {
+                   
                     root.SetData("position", birdPosition);
                     aUpdatePosition = !aUpdatePosition;
                     
                 }
 
-                State = NodeState.Success;
+               
                 DéjaDétect = !DéjaDétect;
 
             }
+            State = NodeState.Success;
         }
         else
         {
             root.SetData("detet", false);
             root.SetData("cri", false);
-            DéjaDétect = !DéjaDétect;
+            if (DéjaDétect)
+            {
+                DéjaDétect = !DéjaDétect;
+                aUpdatePosition = !aUpdatePosition;
+            }
         }
-        
 
+        Debug.Log(State);
         return State;
     }
     
@@ -275,9 +286,10 @@ public class Retour : Node
             root.SetData("detect", false);
             instancier = false;
         }
-        Debug.Log("passe Retour");
+       
         State = NodeState.Failure;
         bool detect = (bool)root.GetData("detect");
+  
         if (detect)
         {
             adetect = true;
@@ -285,13 +297,17 @@ public class Retour : Node
 
         }
         else if( adetect && !estEnTrainDeRetour) {
+            Debug.Log("en train de retour est" + "allo");
             estEnTrainDeRetour = !estEnTrainDeRetour;
             root.SetData("retour", estEnTrainDeRetour);
           
         }
 
-
-        if(estEnTrainDeRetour)
+       
+        Debug.Log("estEnTrainDeRetour est" + estEnTrainDeRetour);
+        
+       
+        if (estEnTrainDeRetour)
         {
 
 
@@ -328,13 +344,14 @@ public class AlertPhase : Node
        
         audio = source;
 
-
+        Debug.Log( "l.audio est"+audio);
+        Debug.Log( audio);
     }
 
 
     public override NodeState Evaluate()
     {
-        Debug.Log("passe alerte");
+       
         root = parent;
 
         while (root.parent != null)
@@ -345,8 +362,7 @@ public class AlertPhase : Node
         }
         State = NodeState.Running;
       cri= (Boolean)root.GetData("cri");
-       
-  
+
         if (!cri)
         {
             compteur = 0;
@@ -418,7 +434,7 @@ public class Patrouille : Node
     }
     public override NodeState Evaluate()
     {
-        Debug.Log("passe Patrouille");
+        
     State= NodeState.Running;
         destination = ListeTransform[destinationIndex];
 
