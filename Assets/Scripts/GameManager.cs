@@ -11,7 +11,7 @@ public class GameManager : MonoBehaviour
 
     //Gamestage stuff
     [SerializeField] Light skylight;
-    MoveToPoint skylightMovement;
+    Animator skylightAnimator;
     [SerializeField] List<float> lightLevelsForGamestages;
     [SerializeField] List<Vector3> lightPositionsForGamestages;
 
@@ -21,7 +21,7 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        skylightMovement = skylight.transform.parent.GetComponent<MoveToPoint>();
+        skylightAnimator = skylight.transform.parent.GetComponent<Animator>();
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         UpdateGameStage();
@@ -54,7 +54,7 @@ public class GameManager : MonoBehaviour
     private void UpdateGameStage()
     {
         skylight.intensity = lightLevelsForGamestages[gameStage];
-        skylightMovement.target = lightPositionsForGamestages[gameStage];
+        skylightAnimator.SetTrigger("Rise");
     }
 
     private void Update()
