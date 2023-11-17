@@ -408,7 +408,7 @@ public class Poursuite : Node
     {
         Debug.Log("passe poursuite");
         State = NodeState.Running;
-        ennemie.transform.Translate(Vector3.Normalize(joueur.position - ennemie.transform.position) * speed);
+        ennemie.transform.Translate(Vector3.Normalize(joueur.position - ennemie.transform.position) * speed*Time.deltaTime);
 
 
         return State;
@@ -438,7 +438,7 @@ public class Patrouille : Node
     State= NodeState.Running;
         destination = ListeTransform[destinationIndex];
 
-        ennemie.transform.Translate(Vector3.Normalize(destination.position - ennemie.transform.position) * speed);
+        ennemie.transform.Translate(Vector3.Normalize(destination.position - ennemie.transform.position) * speed*Time.deltaTime);
         if (Vector3.Distance(ennemie.position, destination.position) <= 10)
         {
             destinationIndex++;
