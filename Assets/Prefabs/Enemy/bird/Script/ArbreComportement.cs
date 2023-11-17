@@ -212,7 +212,7 @@ public class Detect : Node
 
 
 
-        if (detection && y- bird.position.y <30)
+        if (detection && y- bird.position.y <20)
         {
 
             if (!DéjaDétect)
