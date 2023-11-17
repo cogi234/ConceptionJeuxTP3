@@ -22,7 +22,7 @@ public class PatrouilleOiseau : MonoBehaviour
     }
     private void Awake()
     {
-        cri = GameObject.FindGameObjectWithTag("TetrisBird").GetComponent<AudioSource>();
+        cri = GameObject.FindGameObjectWithTag("lookDirectionbird").GetComponent<AudioSource>();
 
     
         joueur = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
