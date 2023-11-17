@@ -24,6 +24,6 @@ public class MoveToPlayerComponent : MonoBehaviour
         animator.SetBool("Grounded", !agent.isOnOffMeshLink); //If we're on an offmeshlink, we're not grounded
         animator.SetFloat("X", (transform.worldToLocalMatrix * agent.velocity).x);
         animator.SetFloat("Z", (transform.worldToLocalMatrix * agent.velocity).z);
-        Debug.Log((transform.worldToLocalMatrix * agent.velocity).z);
+       
     }
 }

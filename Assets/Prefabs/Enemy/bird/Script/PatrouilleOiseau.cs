@@ -24,7 +24,7 @@ public class PatrouilleOiseau : MonoBehaviour
     {
         cri = GameObject.FindGameObjectWithTag("TetrisBird").GetComponent<AudioSource>();
 
-        Debug.Log(cri);
+    
         joueur = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
         SetupTree();
 
@@ -33,7 +33,7 @@ public class PatrouilleOiseau : MonoBehaviour
     public Detect l1;
     private void SetupTree()
     {
-        l1 = new Detect();
+        l1 = new Detect(gameObject.transform);
          
         Node l2 = new Retour(gameObject, Speed);
         Node Invert1 = new Inverter(new List<Node> {l2});
@@ -54,16 +54,6 @@ public class PatrouilleOiseau : MonoBehaviour
         
         root.Evaluate();
     }
-    private void OnTriggerEnter(Collider other)
-    {
-      
-        l1.detection = true; 
-    }
 
-    private void OnTriggerExit(Collider other)
-    {
-       
-        l1.detection = false;
-    }
 
 }

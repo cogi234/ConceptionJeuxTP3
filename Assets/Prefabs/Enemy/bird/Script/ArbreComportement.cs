@@ -94,8 +94,8 @@ public class Sequence : Node
            
 
         }
-        Debug.Log(State);
-        Debug.Log("sequence.réussi");
+        
+       
         State = NodeState.Success;
 
         return NodeState.Success;
@@ -167,7 +167,7 @@ public class Inverter : Node
         {
             State = NodeState.Running;
         }
-
+     
         return State;
     }
 
@@ -179,14 +179,17 @@ public class Inverter : Node
 public class Detect : Node
 {
     bool aUpdatePosition = true;
-  public  bool detection = false;
+    public bool detection = false;
+    float y;
+    Transform bird;
     Node root;
-    Transform birdPosition;
-    public Detect() : base()
+    Vector3 birdPosition;
+    public Detect(Transform birds) : base()
     {
-        
+        bird = birds;
+       // y = birds.position.y;
 
-       
+
 
 
     }
@@ -203,29 +206,30 @@ public class Detect : Node
             root = root.parent;
 
         }
-     
-        
-        
-     
-        
-       
-        if (detection)
+
+
+
+
+
+
+        if (detection && y- bird.position.y <30)
         {
-            
+
             if (!DéjaDétect)
             {
 
-           
+                birdPosition = new Vector3(bird.transform.position.x, bird.transform.position.y, bird.transform.position.z);
                 root.SetData("detect", true);
+            
                 if (aUpdatePosition)
                 {
                    
                     root.SetData("position", birdPosition);
                     aUpdatePosition = !aUpdatePosition;
-                    
+
                 }
 
-               
+
                 DéjaDétect = !DéjaDétect;
 
             }
@@ -233,7 +237,7 @@ public class Detect : Node
         }
         else
         {
-            root.SetData("detet", false);
+            root.SetData("detect", false);
             root.SetData("cri", false);
             if (DéjaDétect)
             {
@@ -242,23 +246,24 @@ public class Detect : Node
             }
         }
 
-        Debug.Log(State);
+       
         return State;
     }
-    
+
 
 
 }
 public class Retour : Node
 {
 
-    Transform positionPoursuite;
+    Vector3 positionPoursuite;
     GameObject ennemie;
     float speed;
     bool estEnTrainDeRetour = false;
    bool adetect =false;
     Node root;
     bool instancier= true;
+    bool detect;
     public Retour( GameObject ennemies, float speeds) : base()
     {
        // positionPoursuite = positionP;
@@ -285,46 +290,56 @@ public class Retour : Node
         {
             root.SetData("detect", false);
             instancier = false;
+            
         }
        
         State = NodeState.Failure;
-        bool detect = (bool)root.GetData("detect");
-  
+         detect = (bool)root.GetData("detect");
+
         if (detect)
         {
             adetect = true;
-            
-
-        }
-        else if( adetect && !estEnTrainDeRetour) {
-            Debug.Log("en train de retour est" + "allo");
-            estEnTrainDeRetour = !estEnTrainDeRetour;
-            root.SetData("retour", estEnTrainDeRetour);
           
+
         }
-
-       
-        Debug.Log("estEnTrainDeRetour est" + estEnTrainDeRetour);
-        
-       
-        if (estEnTrainDeRetour)
-        {
-
-
-
-            positionPoursuite  = (Transform)root.GetData("position");
+        else  {
          
           
-                ennemie.transform.Translate(Vector3.Normalize(positionPoursuite.position - ennemie.transform.position) * speed * Time.deltaTime);
-                if(Vector3.Distance(ennemie.transform.position, positionPoursuite.position) <= 1)
+            if (adetect && !estEnTrainDeRetour)
+            {
+                adetect = !adetect;
+                estEnTrainDeRetour = !estEnTrainDeRetour;
+                root.SetData("retour", estEnTrainDeRetour);
+                
+            }
+               
+
+        }
+      
+
+
+     
+        if (estEnTrainDeRetour)
+        {
+            
+
+
+            positionPoursuite  = (Vector3)root.GetData("position");
+          
+
+            ennemie.transform.Translate(Vector3.Normalize(positionPoursuite - ennemie.transform.position) * speed * Time.deltaTime);
+                if(Vector3.Distance(ennemie.transform.position, positionPoursuite) <= 1)
                 {
+                Debug.Log("re");
                     estEnTrainDeRetour = !estEnTrainDeRetour;
                     root.SetData("retour", estEnTrainDeRetour);
-                  State = NodeState.Success;
+                State = NodeState.Success;
+
             }
-                 State = NodeState.Running;
-            
+            State = NodeState.Running;
+
         }
+    
         return State;
     }
 
@@ -344,8 +359,7 @@ public class AlertPhase : Node
        
         audio = source;
 
-        Debug.Log( "l.audio est"+audio);
-        Debug.Log( audio);
+        
     }
 
 
@@ -361,7 +375,7 @@ public class AlertPhase : Node
 
         }
         State = NodeState.Running;
-      cri= (Boolean)root.GetData("cri");
+      cri= (Boolean)root.GetData("cri");    
 
         if (!cri)
         {
@@ -393,9 +407,9 @@ public class Poursuite : Node
 {
     Transform joueur;
     Transform ennemie;
-  
+    private Vector3 _direction;
     float speed;
-    //
+    
 
 
     public Poursuite(Transform joueur, Transform ennemie,float speed) : base()
@@ -407,9 +421,18 @@ public class Poursuite : Node
 
     public override NodeState Evaluate()
     {
-      
+        _direction = (joueur.position - ennemie.position).normalized;
+
+        Vector3 gravityUp = -_direction.normalized;
+        ennemie.rotation = Quaternion.FromToRotation(-ennemie.right, gravityUp) * ennemie.rotation;
+
+       
+
+
+
+
         State = NodeState.Running;
-        ennemie.transform.Translate(Vector3.Normalize(joueur.position - ennemie.transform.position) * speed*Time.deltaTime);
+        ennemie.transform.Translate(Vector3.right * speed * Time.deltaTime);
 
 
         return State;
@@ -424,7 +447,10 @@ public class Patrouille : Node
     Transform ennemie;
     int destinationIndex = 0;
     Transform destination;
-    
+
+   
+
+    private Vector3 _direction;
     float speed = 3;
 
     public Patrouille(Transform ennemie, List<Transform> destination,float speed) : base()
@@ -439,7 +465,18 @@ public class Patrouille : Node
     State= NodeState.Running;
         destination = ListeTransform[destinationIndex];
 
-        ennemie.transform.Translate(Vector3.Normalize(destination.position - ennemie.transform.position) * speed*Time.deltaTime);
+
+        _direction = (destination.position - ennemie.position).normalized;
+
+        Vector3 gravityUp = -_direction.normalized;
+        ennemie.rotation = Quaternion.FromToRotation(-ennemie.right, gravityUp) * ennemie.rotation;
+
+
+        //ennemie.position += -Vector3.right * Time.deltaTime;
+
+
+
+        ennemie.transform.Translate(Vector3.right * speed*Time.deltaTime);
         if (Vector3.Distance(ennemie.position, destination.position) <= 10)
         {
             destinationIndex++;
