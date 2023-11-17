@@ -315,7 +315,7 @@ public class Retour : Node
             positionPoursuite  = (Transform)root.GetData("position");
          
           
-                ennemie.transform.Translate(Vector3.Normalize(positionPoursuite.position - ennemie.transform.position) * speed);
+                ennemie.transform.Translate(Vector3.Normalize(positionPoursuite.position - ennemie.transform.position) * speed * Time.deltaTime);
                 if(Vector3.Distance(ennemie.transform.position, positionPoursuite.position) <= 1)
                 {
                     estEnTrainDeRetour = !estEnTrainDeRetour;
@@ -393,6 +393,7 @@ public class Poursuite : Node
 {
     Transform joueur;
     Transform ennemie;
+  
     float speed;
     //
 
@@ -406,7 +407,7 @@ public class Poursuite : Node
 
     public override NodeState Evaluate()
     {
-        Debug.Log("passe poursuite");
+      
         State = NodeState.Running;
         ennemie.transform.Translate(Vector3.Normalize(joueur.position - ennemie.transform.position) * speed*Time.deltaTime);
 
