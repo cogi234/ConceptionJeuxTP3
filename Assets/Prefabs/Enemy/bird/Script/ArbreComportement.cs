@@ -187,7 +187,7 @@ public class Detect : Node
     public Detect(Transform birds) : base()
     {
         bird = birds;
-       // y = birds.position.y;
+        y = birds.position.y;
 
 
 
@@ -211,19 +211,19 @@ public class Detect : Node
 
 
 
-
-        if (detection && y- bird.position.y <20)
+        birdPosition = new Vector3(bird.transform.position.x, bird.transform.position.y, bird.transform.position.z);
+        if (detection && y- bird.position.y <30)
         {
 
             if (!DéjaDétect)
             {
 
-                birdPosition = new Vector3(bird.transform.position.x, bird.transform.position.y, bird.transform.position.z);
+               
                 root.SetData("detect", true);
             
                 if (aUpdatePosition)
                 {
-                   
+                  
                     root.SetData("position", birdPosition);
                     aUpdatePosition = !aUpdatePosition;
 
@@ -425,18 +425,18 @@ public class Poursuite : Node
 
     public override NodeState Evaluate()
     {
-        _direction = (joueur.position - ennemie.position).normalized;
-        
-        Vector3 gravityUp = -_direction.normalized;
-        ennemie.rotation = Quaternion.FromToRotation(-  ennemie.forward, gravityUp) * ennemie.rotation;
+        //_direction = (joueur.position - ennemie.position).normalized;
+
+        //Vector3 gravityUp = -_direction.normalized;
+        //ennemie.rotation = Quaternion.FromToRotation(-  ennemie.forward, gravityUp) * ennemie.rotation;
 
 
 
-      //  ennemie.rotation.SetLookRotation(_direction, new Vector3(0, 1, 0));
-
+        //  ennemie.rotation.SetLookRotation(_direction, new Vector3(0, 1, 0));
+        ennemie.transform.Translate(Vector3.Normalize(joueur.position - ennemie.transform.position) * speed * Time.deltaTime);
 
         State = NodeState.Running;
-        ennemie.transform.Translate(Vector3.forward * speed * Time.deltaTime);
+      //  ennemie.transform.Translate(Vector3.forward * speed * Time.deltaTime);
 
 
         return State;
@@ -470,17 +470,17 @@ public class Patrouille : Node
         destination = ListeTransform[destinationIndex];
 
 
-        _direction = (destination.position - ennemie.position).normalized;
+        //_direction = (destination.position - ennemie.position).normalized;
 
-        Vector3 gravityUp = -_direction.normalized;
-        ennemie.rotation = Quaternion.FromToRotation(-ennemie.forward, gravityUp) * ennemie.rotation;
-
-
+        //Vector3 gravityUp = -_direction.normalized;
+        //ennemie.rotation = Quaternion.FromToRotation(-ennemie.forward, gravityUp) * ennemie.rotation;
 
 
 
+        ennemie.transform.Translate(Vector3.Normalize(destination.position - ennemie.transform.position) * speed * Time.deltaTime);
 
-        ennemie.transform.Translate(Vector3.forward * speed * Time.deltaTime);
+
+       
         if (Vector3.Distance(ennemie.position, destination.position) <= 10)
         {
             destinationIndex++;
