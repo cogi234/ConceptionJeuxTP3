@@ -356,7 +356,7 @@ public class AlertPhase : Node
     public AlertPhase(AudioSource source) : base()
     {
         
-       
+        cri = GameObject.FindGameObjectWithTag("TetrisBird").GetComponent<AudioSource>();
         audio = source;
 
         
@@ -375,7 +375,11 @@ public class AlertPhase : Node
 
         }
         State = NodeState.Running;
-      cri= (Boolean)root.GetData("cri");    
+       
+        
+            cri = (Boolean)root.GetData("cri");
+       
+     
 
         if (!cri)
         {
@@ -423,12 +427,12 @@ public class Poursuite : Node
     {
         _direction = (joueur.position - ennemie.position).normalized;
 
-        Vector3 gravityUp = -_direction.normalized;
-        ennemie.rotation = Quaternion.FromToRotation(-ennemie.right, gravityUp) * ennemie.rotation;
-
-       
+        //Vector3 gravityUp = -_direction.normalized;
+      //  ennemie.rotation = Quaternion.FromToRotation(-ennemie.right, gravityUp) * ennemie.rotation;
 
 
+
+        ennemie.rotation.SetLookRotation(_direction, new Vector3(0, 1, 0));
 
 
         State = NodeState.Running;

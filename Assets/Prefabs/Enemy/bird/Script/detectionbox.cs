@@ -10,8 +10,8 @@ public class detectionbox : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        oiseau = GameObject.FindGameObjectWithTag("lookDirectionbird");
-        patrouilleOiseau=GameObject.FindGameObjectWithTag("lookDirectionbird").GetComponent<PatrouilleOiseau>();
+        oiseau = GameObject.FindGameObjectWithTag("TetrisBird");
+        patrouilleOiseau=GameObject.FindGameObjectWithTag("TetrisBird").GetComponent<PatrouilleOiseau>();
         transform.position = oiseau.transform.position;
     }
     private void Update()
