@@ -426,17 +426,17 @@ public class Poursuite : Node
     public override NodeState Evaluate()
     {
         _direction = (joueur.position - ennemie.position).normalized;
+        
+        Vector3 gravityUp = -_direction.normalized;
+        ennemie.rotation = Quaternion.FromToRotation(-  ennemie.forward, gravityUp) * ennemie.rotation;
 
-        //Vector3 gravityUp = -_direction.normalized;
-      //  ennemie.rotation = Quaternion.FromToRotation(-ennemie.right, gravityUp) * ennemie.rotation;
 
 
-
-        ennemie.rotation.SetLookRotation(_direction, new Vector3(0, 1, 0));
+      //  ennemie.rotation.SetLookRotation(_direction, new Vector3(0, 1, 0));
 
 
         State = NodeState.Running;
-        ennemie.transform.Translate(Vector3.right * speed * Time.deltaTime);
+        ennemie.transform.Translate(Vector3.forward * speed * Time.deltaTime);
 
 
         return State;
@@ -473,14 +473,14 @@ public class Patrouille : Node
         _direction = (destination.position - ennemie.position).normalized;
 
         Vector3 gravityUp = -_direction.normalized;
-        ennemie.rotation = Quaternion.FromToRotation(-ennemie.right, gravityUp) * ennemie.rotation;
-
-
-        //ennemie.position += -Vector3.right * Time.deltaTime;
+        ennemie.rotation = Quaternion.FromToRotation(-ennemie.forward, gravityUp) * ennemie.rotation;
 
 
 
-        ennemie.transform.Translate(Vector3.right * speed*Time.deltaTime);
+
+
+
+        ennemie.transform.Translate(Vector3.forward * speed * Time.deltaTime);
         if (Vector3.Distance(ennemie.position, destination.position) <= 10)
         {
             destinationIndex++;
