@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DetectionBox : MonoBehaviour
+public class detectionbox : MonoBehaviour
 {
     GameObject bird;
     BirdPatrol birdPatrol;

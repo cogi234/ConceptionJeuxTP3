@@ -24,6 +24,7 @@ public class Altar : MonoBehaviour, IInteractable
     IEnumerator Animate()
     {
         GetComponent<ParticleSystem>().Play();
+        GetComponent<Animator>().SetTrigger("lower");
         yield return new WaitForSeconds(4.5f);
         orbLight.enabled = false;
         gameManager.AugmentGameStage();
