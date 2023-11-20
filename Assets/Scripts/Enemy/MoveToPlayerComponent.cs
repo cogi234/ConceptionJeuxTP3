@@ -21,9 +21,10 @@ public class MoveToPlayerComponent : MonoBehaviour
     {
         agent.destination = player.transform.position;
         //Animation stuff
+        if (agent.isOnOffMeshLink)
+            animator.SetTrigger("Jump");
         animator.SetBool("Grounded", !agent.isOnOffMeshLink); //If we're on an offmeshlink, we're not grounded
         animator.SetFloat("X", (transform.worldToLocalMatrix * agent.velocity).x);
         animator.SetFloat("Z", (transform.worldToLocalMatrix * agent.velocity).z);
-       
     }
 }
