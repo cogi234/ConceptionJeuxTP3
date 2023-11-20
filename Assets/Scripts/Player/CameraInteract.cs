@@ -2,11 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Animations.Rigging;
 
 public class CameraInteract : MonoBehaviour
 {
     [SerializeField] InputActionAsset inputAsset;
     [SerializeField] Transform player;
+    [SerializeField] Rig interactionRig;
     [SerializeField] GameObject interactText;
     [SerializeField] float interactionDistance = 5;
 
