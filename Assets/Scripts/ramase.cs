@@ -14,8 +14,6 @@ public class ramase : MonoBehaviour
     {
         if (updatee)
         {
-
-            
             if (!change)
             {
                 compteur =+Time.deltaTime;
@@ -38,16 +36,11 @@ public class ramase : MonoBehaviour
                 change = !change;
                 updatee = !updatee;
             }
-            
         }
-        
     }
-
 
     public void changer()
     {
         updatee = !updatee;
-    
     }
-   
 }

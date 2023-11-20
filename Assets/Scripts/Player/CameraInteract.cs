@@ -8,9 +8,13 @@ public class CameraInteract : MonoBehaviour
 {
     [SerializeField] InputActionAsset inputAsset;
     [SerializeField] Transform player;
-    [SerializeField] Rig interactionRig;
     [SerializeField] GameObject interactText;
     [SerializeField] float interactionDistance = 5;
+    [Header("Animation stuff")]
+    [SerializeField] Rig rig;
+    [SerializeField] Transform target;
+    [SerializeField] float timeToInteract = 0.5f;
+
 
     private void Awake()
     {
@@ -42,6 +46,27 @@ public class CameraInteract : MonoBehaviour
         if (Physics.Raycast(transform.position, transform.forward, out hit, 25, LayerMask.GetMask("Interactable")) && hit.transform.tag == "Interactable" && Vector3.Distance(hit.point, player.position) < interactionDistance)
         {
             hit.transform.GetComponent<IInteractable>().Interact();
+            StartCoroutine(AnimateInteraction(hit.transform));
+        }
+    }
+
+    private IEnumerator AnimateInteraction(Transform altar)
+    {
+        target.position = altar.position + new Vector3(0, 1, 0);
+        //reach out
+        float timer = 0;
+        while (timer < timeToInteract)
+        {
+            timer += Time.deltaTime;
+            rig.weight = Mathf.Min(timer / timeToInteract, 1);
+            yield return null;
+        }
+        //stop reaching out
+        while (timer > 0)
+        {
+            timer -= Time.deltaTime;
+            rig.weight = Mathf.Max(timer / timeToInteract, 0);
+            yield return null;
         }
     }
 }
