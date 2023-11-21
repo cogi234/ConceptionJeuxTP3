@@ -174,17 +174,16 @@ public class Detect : Node
 public class Return : Node
 {
     Vector3 targetPosition;
-    GameObject enemy;
+    Transform enemy;
     float speed;
     bool isReturning = false;
     bool hasDetected = false;
     Node root;
     bool instancier = true;
     bool detect;
-    public Return(GameObject ennemies, float speeds) : base()
+    public Return(Transform enemy, float speeds) : base()
     {
-        // positionPoursuite = positionP;
-        enemy = ennemies;
+        this.enemy = enemy;
         speed = speeds;
     }
 
@@ -219,8 +218,8 @@ public class Return : Node
         if (isReturning)
         {
             targetPosition = (Vector3)root.GetData("position");
-            enemy.transform.Translate(Vector3.Normalize(targetPosition - enemy.transform.position) * speed * Time.deltaTime);
-            if (Vector3.Distance(enemy.transform.position, targetPosition) <= 1)
+            enemy.Translate(Vector3.Normalize(targetPosition - enemy.position) * speed * Time.deltaTime, Space.World);
+            if (Vector3.Distance(enemy.position, targetPosition) <= 1)
             {
                 Debug.Log("re");
                 isReturning = !isReturning;
@@ -293,7 +292,7 @@ public class Pursuit : Node
         //me.rotation = Quaternion.FromToRotation(me.forward, direction) * me.rotation;
 
         //me.rotation.SetLookRotation(direction, new Vector3(0, 1, 0));
-        me.Translate(Vector3.Normalize(target.position - me.position) * speed * Time.deltaTime);
+        me.Translate(Vector3.Normalize(target.position - me.position) * speed * Time.deltaTime, Space.World);
 
         //me.transform.Translate(Vector3.forward * speed * Time.deltaTime);
 
@@ -320,12 +319,11 @@ public class Patrol : Node
     {
         State = NodeState.Running;
         destination = waypoints[destinationIndex];
-
         //direction = (destination.position - me.position).normalized;
 
         //me.rotation = Quaternion.FromToRotation(me.forward, direction) * me.rotation;
 
-        me.transform.Translate(Vector3.Normalize(destination.position - me.position) * speed * Time.deltaTime);
+        me.transform.Translate(Vector3.Normalize(destination.position - me.position) * speed * Time.deltaTime, Space.World);
 
         if (Vector3.Distance(me.position, destination.position) <= 10)
             destinationIndex = (destinationIndex + 1) % waypoints.Count;

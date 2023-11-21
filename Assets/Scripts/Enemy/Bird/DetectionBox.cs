@@ -22,12 +22,12 @@ public class detectionbox : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.tag == "Player")
-            birdPatrol.l1.detection = true;
+            birdPatrol.detect.detection = true;
     }
 
     private void OnTriggerExit(Collider other)
     {
         if (other.gameObject.tag == "Player")
-            birdPatrol.l1.detection = false;
+            birdPatrol.detect.detection = false;
     }
 }
