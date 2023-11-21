@@ -218,6 +218,7 @@ public class Return : Node
         if (isReturning)
         {
             targetPosition = (Vector3)root.GetData("position");
+            enemy.LookAt(targetPosition, Vector3.up);
             enemy.Translate(Vector3.Normalize(targetPosition - enemy.position) * speed * Time.deltaTime, Space.World);
             if (Vector3.Distance(enemy.position, targetPosition) <= 1)
             {
@@ -293,6 +294,7 @@ public class Pursuit : Node
 
         //me.rotation.SetLookRotation(direction, new Vector3(0, 1, 0));
         me.Translate(Vector3.Normalize(target.position - me.position) * speed * Time.deltaTime, Space.World);
+        me.LookAt(target, Vector3.up);
 
         //me.transform.Translate(Vector3.forward * speed * Time.deltaTime);
 
@@ -324,6 +326,7 @@ public class Patrol : Node
         //me.rotation = Quaternion.FromToRotation(me.forward, direction) * me.rotation;
 
         me.transform.Translate(Vector3.Normalize(destination.position - me.position) * speed * Time.deltaTime, Space.World);
+        me.LookAt(destination, Vector3.up);
 
         if (Vector3.Distance(me.position, destination.position) <= 10)
             destinationIndex = (destinationIndex + 1) % waypoints.Count;
